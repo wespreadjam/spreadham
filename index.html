@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>spreadham.com — we are hiring pilots to deliver hams</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", system-ui, sans-serif;
+  }
+
+  @keyframes rainbow-bg {
+    0%   { background-color: #ff0000; }
+    14%  { background-color: #ff8000; }
+    28%  { background-color: #ffff00; }
+    42%  { background-color: #00ff00; }
+    57%  { background-color: #00ffff; }
+    71%  { background-color: #0000ff; }
+    85%  { background-color: #8000ff; }
+    100% { background-color: #ff0080; }
+  }
+
+  body {
+    animation: rainbow-bg 1.2s linear infinite;
+  }
+
+  @keyframes rainbow-text {
+    0%   { color: #00ffff; text-shadow: 0 0 10px #ff0000, 0 0 20px #ffff00; }
+    25%  { color: #ff00ff; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff; }
+    50%  { color: #ffff00; text-shadow: 0 0 10px #ff00ff, 0 0 20px #0000ff; }
+    75%  { color: #00ff00; text-shadow: 0 0 10px #ff8000, 0 0 20px #ff00ff; }
+    100% { color: #00ffff; text-shadow: 0 0 10px #ff0000, 0 0 20px #ffff00; }
+  }
+
+  @keyframes wobble {
+    0%   { transform: translate(-50%, -50%) rotate(-4deg) scale(1); }
+    50%  { transform: translate(-50%, -50%) rotate(4deg) scale(1.05); }
+    100% { transform: translate(-50%, -50%) rotate(-4deg) scale(1); }
+  }
+
+  .headline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+    animation: rainbow-text 0.6s linear infinite, wobble 0.8s ease-in-out infinite;
+    font-weight: 900;
+    -webkit-text-stroke: 2px black;
+    text-stroke: 2px black;
+    padding: 0 20px;
+  }
+
+  .headline .domain {
+    display: block;
+    font-size: clamp(48px, 10vw, 160px);
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .headline .pitch {
+    display: block;
+    font-size: clamp(20px, 3.5vw, 56px);
+    margin-top: 12px;
+    line-height: 1.1;
+  }
+
+  @keyframes ham-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .ham {
+    position: absolute;
+    width: 180px;
+    height: auto;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    filter: drop-shadow(0 0 12px #fff) drop-shadow(0 0 24px #ff00ff);
+    animation: ham-spin 1.5s linear infinite;
+    will-change: transform, top, left;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  @keyframes rainbow-btn-bg {
+    0%   { background-color: #ff0000; }
+    14%  { background-color: #ff8000; }
+    28%  { background-color: #ffff00; }
+    42%  { background-color: #00ff00; }
+    57%  { background-color: #00ffff; }
+    71%  { background-color: #0000ff; }
+    85%  { background-color: #8000ff; }
+    100% { background-color: #ff0080; }
+  }
+
+  @keyframes rainbow-border {
+    0%   { border-color: #00ffff; box-shadow: 0 0 20px #ff0000, 0 0 40px #ffff00, inset 0 0 20px #ff00ff; }
+    25%  { border-color: #ff00ff; box-shadow: 0 0 20px #00ff00, 0 0 40px #00ffff, inset 0 0 20px #ffff00; }
+    50%  { border-color: #ffff00; box-shadow: 0 0 20px #ff00ff, 0 0 40px #0000ff, inset 0 0 20px #00ff00; }
+    75%  { border-color: #00ff00; box-shadow: 0 0 20px #ff8000, 0 0 40px #ff00ff, inset 0 0 20px #00ffff; }
+    100% { border-color: #00ffff; box-shadow: 0 0 20px #ff0000, 0 0 40px #ffff00, inset 0 0 20px #ff00ff; }
+  }
+
+  @keyframes btn-shake {
+    0%, 100% { transform: translateX(-50%) rotate(-3deg) scale(1); }
+    25%      { transform: translateX(-50%) rotate(3deg) scale(1.08); }
+    50%      { transform: translateX(-50%) rotate(-2deg) scale(0.96); }
+    75%      { transform: translateX(-50%) rotate(4deg) scale(1.05); }
+  }
+
+  .start {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    cursor: pointer;
+    padding: 18px 36px;
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", system-ui, sans-serif;
+    font-size: clamp(18px, 3vw, 32px);
+    font-weight: 900;
+    border: 6px dashed #00ffff;
+    border-radius: 16px;
+    -webkit-text-stroke: 2px black;
+    text-stroke: 2px black;
+    animation:
+      rainbow-btn-bg 0.4s linear infinite,
+      rainbow-text 0.5s linear infinite,
+      rainbow-border 0.6s linear infinite,
+      btn-shake 0.35s ease-in-out infinite;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+  .start.hidden { display: none; }
+
+  @keyframes box-wobble-a {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    50%      { transform: rotate(5deg) scale(1.08); }
+  }
+  @keyframes box-wobble-b {
+    0%, 100% { transform: rotate(6deg) scale(1.05); }
+    50%      { transform: rotate(-4deg) scale(0.95); }
+  }
+  @keyframes box-wobble-c {
+    0%, 100% { transform: rotate(-3deg) translateY(-4px); }
+    50%      { transform: rotate(7deg) translateY(4px) scale(1.1); }
+  }
+
+  .hambar {
+    position: fixed;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    padding: 0 12px;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .hambox {
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", system-ui, sans-serif;
+    font-weight: 900;
+    font-size: clamp(9px, 1.2vw, 14px);
+    padding: 6px 10px;
+    border: 3px dotted #fff;
+    border-radius: 8px;
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    animation:
+      rainbow-btn-bg 0.5s linear infinite,
+      rainbow-text 0.45s linear infinite,
+      rainbow-border 0.7s linear infinite;
+  }
+
+  .hambox:nth-child(1) { animation-duration: 0.4s, 0.6s, 0.8s, 0.7s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-a; }
+  .hambox:nth-child(2) { animation-duration: 0.55s, 0.35s, 0.75s, 0.6s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-b; }
+  .hambox:nth-child(3) { animation-duration: 0.3s, 0.5s, 0.65s, 0.9s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-c; }
+  .hambox:nth-child(4) { animation-duration: 0.45s, 0.4s, 0.85s, 0.5s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-a; }
+  .hambox:nth-child(5) { animation-duration: 0.5s, 0.55s, 0.7s, 0.8s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-b; }
+  .hambox:nth-child(6) { animation-duration: 0.35s, 0.45s, 0.6s, 1s; animation-name: rainbow-btn-bg, rainbow-text, rainbow-border, box-wobble-c; }
+  .hambox { animation-iteration-count: infinite; animation-timing-function: linear, linear, linear, ease-in-out; }
+
+  .volbtn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+    cursor: pointer;
+    padding: 6px 10px;
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    border: 2px dashed #ff00ff;
+    border-radius: 8px;
+    -webkit-text-stroke: 0.5px black;
+    text-stroke: 0.5px black;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation:
+      rainbow-btn-bg 0.45s linear infinite,
+      rainbow-text 0.4s linear infinite,
+      rainbow-border 0.65s linear infinite;
+  }
+</style>
+</head>
+<body>
+  <div class="headline">
+    <span class="domain">spreadham.com</span>
+    <span class="pitch">we are hiring pilots to deliver hams</span>
+  </div>
+
+  <img id="ham" class="ham" src="assets/ham.png" alt="ham" />
+
+  <div class="hambar">
+    <div class="hambox">who up</div>
+    <div class="hambox">spreading</div>
+    <div class="hambox">they</div>
+    <div class="hambox">ham</div>
+    <div class="hambox">who up spreading they ham</div>
+    <div class="hambox">🍖 spread 🍖</div>
+  </div>
+
+  <audio id="horn" src="assets/horn.mp3" loop preload="auto"></audio>
+
+  <button id="start" class="start" type="button">click to unleash the ham</button>
+  <button id="vol" class="volbtn" type="button">🔊 volume on</button>
+
+<script>
+  (function () {
+    const firstHam = document.getElementById('ham');
+    const horn = document.getElementById('horn');
+    const start = document.getElementById('start');
+
+    const MAX_HAMS = 120;
+    const hams = [];
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function spawnHam(initial) {
+      const size = rand(40, 220);
+      let el;
+      if (initial) {
+        el = firstHam;
+        el.style.width = '180px';
+      } else {
+        if (hams.length >= MAX_HAMS) return;
+        el = firstHam.cloneNode(false);
+        el.removeAttribute('id');
+        el.className = 'ham';
+        el.style.width = size + 'px';
+        document.body.appendChild(el);
+      }
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const hamObj = {
+        el,
+        x: rand(0, Math.max(1, w - size)),
+        y: rand(0, Math.max(1, h - size)),
+        vx: rand(2, 8) * (Math.random() < 0.5 ? -1 : 1),
+        vy: rand(2, 8) * (Math.random() < 0.5 ? -1 : 1),
+      };
+      el.style.animationDuration = rand(0.6, 3) + 's';
+      hams.push(hamObj);
+    }
+
+    spawnHam(true);
+
+    function step() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      for (const ham of hams) {
+        const hw = ham.el.offsetWidth;
+        const hh = ham.el.offsetHeight;
+        ham.x += ham.vx;
+        ham.y += ham.vy;
+        if (ham.x <= 0) { ham.x = 0; ham.vx = -ham.vx; }
+        if (ham.y <= 0) { ham.y = 0; ham.vy = -ham.vy; }
+        if (ham.x + hw >= w) { ham.x = w - hw; ham.vx = -ham.vx; }
+        if (ham.y + hh >= h) { ham.y = h - hh; ham.vy = -ham.vy; }
+        ham.el.style.left = ham.x + 'px';
+        ham.el.style.top = ham.y + 'px';
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+
+    setInterval(() => spawnHam(false), 1500);
+
+    function go() {
+      horn.volume = 1.0;
+      horn.play().catch(() => {});
+      for (let i = 0; i < 5; i++) spawnHam(false);
+      start.classList.add('hidden');
+    }
+
+    start.addEventListener('click', go);
+    document.addEventListener('keydown', go, { once: true });
+
+    const vol = document.getElementById('vol');
+    let muted = false;
+    vol.addEventListener('click', () => {
+      muted = !muted;
+      horn.muted = muted;
+      if (!muted && horn.paused) horn.play().catch(() => {});
+      vol.textContent = muted ? '🔇 volume off' : '🔊 volume on';
+    });
+  })();
+</script>
+</body>
+</html>
