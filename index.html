@@ -263,6 +263,39 @@
     const MAX_HAMS = 20;
     const hams = [];
 
+    let audioCtx = null;
+    let thudBuffer = null;
+    let thudReady = false;
+    let muted = false;
+    let lastThud = 0;
+
+    async function initAudio() {
+      if (audioCtx) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      audioCtx = new Ctx();
+      try {
+        const res = await fetch('assets/thud.mp3');
+        const buf = await res.arrayBuffer();
+        thudBuffer = await audioCtx.decodeAudioData(buf);
+        thudReady = true;
+      } catch (e) {}
+    }
+
+    function playThud() {
+      if (muted || !thudReady || !audioCtx) return;
+      const now = performance.now();
+      if (now - lastThud < 40) return;
+      lastThud = now;
+      const src = audioCtx.createBufferSource();
+      src.buffer = thudBuffer;
+      src.playbackRate.value = 0.85 + Math.random() * 0.5;
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.6;
+      src.connect(gain).connect(audioCtx.destination);
+      src.start(0);
+    }
+
     function rand(min, max) { return Math.random() * (max - min) + min; }
 
     function spawnHam(initial) {
@@ -302,10 +335,12 @@
         const hh = ham.el.offsetHeight;
         ham.x += ham.vx;
         ham.y += ham.vy;
-        if (ham.x <= 0) { ham.x = 0; ham.vx = -ham.vx; }
-        if (ham.y <= 0) { ham.y = 0; ham.vy = -ham.vy; }
-        if (ham.x + hw >= w) { ham.x = w - hw; ham.vx = -ham.vx; }
-        if (ham.y + hh >= h) { ham.y = h - hh; ham.vy = -ham.vy; }
+        let hit = false;
+        if (ham.x <= 0) { ham.x = 0; ham.vx = -ham.vx; hit = true; }
+        if (ham.y <= 0) { ham.y = 0; ham.vy = -ham.vy; hit = true; }
+        if (ham.x + hw >= w) { ham.x = w - hw; ham.vx = -ham.vx; hit = true; }
+        if (ham.y + hh >= h) { ham.y = h - hh; ham.vy = -ham.vy; hit = true; }
+        if (hit) playThud();
         ham.el.style.left = ham.x + 'px';
         ham.el.style.top = ham.y + 'px';
       }
@@ -318,6 +353,7 @@
     function go() {
       horn.volume = 1.0;
       horn.play().catch(() => {});
+      initAudio();
       for (let i = 0; i < 5; i++) spawnHam(false);
       start.classList.add('hidden');
     }
@@ -326,7 +362,6 @@
     document.addEventListener('keydown', go, { once: true });
 
     const vol = document.getElementById('vol');
-    let muted = false;
     vol.addEventListener('click', () => {
       muted = !muted;
       horn.muted = muted;
